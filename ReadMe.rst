@@ -5,13 +5,13 @@ SbitFire Software, 2014-09-19
 
 
 Purpose
-———————
+-------
 The AnnotationConverter imports annotations (highlights, notes, bookmarks) 
 from one E-reader and converts them to the format used by another.
 
 
 Restrictions, Requirements
-——————————————————————————
+--------------------------
 • Requires .Net 4 (if absolutely necessary, I could try to create a .Net 3.5 version)
 • Has only be tested on Windows 7 (but should work on other versions of Windows, too)
 • Currently, annotations can only be converted from Sony PRS-T1-3 to Adobe Digital Editions 2-3
@@ -20,7 +20,7 @@ Restrictions, Requirements
 
 
 Installation instructions
-—————————————————————————
+-------------------------
 An installer is not included.
 Simply unpack the entire content of AnnotationConverter.zip to your directory of choice.
 Opening AnnotationConverter.exe should start the application.
@@ -28,7 +28,7 @@ If .NET 4 is not installed on your machine, install instructions will automatica
 
 
 Manual
-——————
+------
 1) Import the book containing your annotations into Adobe Digital Editions (2 or 3)
 
 If the epub is imported from an external source (the reading device, Calibre, any folder containing your books), ADE will simply reference the book (not copy it) and create an .annot file in ..\My Digital Editions\Annotations\.external
@@ -50,6 +50,6 @@ The book should now contain your annotations. Depending on the number of annotat
 
 
 Change history
-——————————————
+--------------
 2014-09-19, v. 0.9.0 Beta:
 initial version, supporting one source type (Sony PRS-T#) and one target type (ADE)

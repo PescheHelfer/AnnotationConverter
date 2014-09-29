@@ -30,12 +30,9 @@ If .NET 4 is not installed on your machine, install instructions will automatica
 Manual
 ------
 1) Import the book containing your annotations into Adobe Digital Editions (2 or 3)
-
-If the epub is imported from an external source (the reading device, Calibre, any folder containing your books), ADE will simply reference the book (not copy it) and create an .annot file in ..\My Digital Editions\Annotations\.external
-
-If the book is downloaded/unlocked from within ADE, the .epub file will be created in ..\My Digital Editions\ and an .epub.annot file will be created in ..\My Digital Editions\Annotations\
-
-Open AnnotationConverter.exe and check "Ok, I've done that"
+   If the epub is imported from an external source (the reading device, Calibre, any folder containing your books), ADE will simply reference the book (not copy it) and create an .annot file in ..\My Digital Editions\Annotations\.external
+   If the book is downloaded/unlocked from within ADE, the .epub file will be created in ..\My Digital Editions\ and an .epub.annot file will be created in ..\My Digital Editions\Annotations\
+   Open AnnotationConverter.exe and check "Ok, I've done that"
 
 2) Click "Browse" to look for the database file containing your books (books.db). You can either directly use the file on your reader (..\Sony_Reader\database\book.db) or a backup of this file.
 
@@ -53,3 +50,21 @@ Change history
 --------------
 2014-09-19, v. 0.9.0 Beta:
 initial version, supporting one source type (Sony PRS-T#) and one target type (ADE)
+
+
+License
+-------
+Copyright (c) 2014 Pesche Helfer
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

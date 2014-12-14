@@ -15,7 +15,7 @@ namespace AnnotationConverter
         private string _namespaceUrl;
         private string _prefix;
 
-        internal override void PrepareDocument(string targetFile)
+        internal override void PrepareTarget(string targetFile)
         {
             _settings.Indent = true;
             _settings.IndentChars = "  ";          // 2 Leerzeichen
@@ -30,65 +30,70 @@ namespace AnnotationConverter
             _writer.WriteAttributeString("xmlns", "dc", null, "http://purl.org/dc/elements/1.1/");
         }
 
+        internal override void PrepareTarget(long bookId)
+        {
+            throw new NotSupportedException(("'PrepareTarget(string dbFile, long bookID)' is not supported by ExportToMantano.\nUse 'PrepareTarget(string targetFile)' instead"));
+        }
+
         /// <summary>
         /// Prepares the data in the row (converts Blob data etc.)
         /// </summary>
         /// <param name="row">row filled by the SQLiteDataReader</param>
-        internal override void ExportRow(long iD, int markupType, string strMark, string strMarkEnd, string strName, string strMarkedText, string page, DateTime addedDate)
+        internal override void ExportRow(ExportRowParams exportRowParams)
         {
             //Console.WriteLine(strMark, strMarkEnd);
             // writer.WriteStartElement("annotation");
             _writer.WriteStartElement("annotation", ""); // second parameter leads to empty namespace: xmlns="" (as in the original file)
-            if (markupType > 10) // highlight with note -> make it visible
+            if (exportRowParams.MarkupType > 10) // highlight with note -> make it visible
             {
                 _writer.WriteAttributeString("isvisible", "true");
             }
 
             _namespaceUrl = "http://purl.org/dc/elements/1.1/";
             _prefix = _writer.LookupPrefix(_namespaceUrl);
-            _writer.WriteElementString(_prefix, "identifier", _namespaceUrl, "urn:uuid:" + iD.ToString()); // the ID is not required by digital editions. Hence, the _id from the Sony reader is used (although it has a different format).
-            _writer.WriteElementString(_prefix, "date", _namespaceUrl, addedDate.ToString("s") + "-00:00");
+            _writer.WriteElementString(_prefix, "identifier", _namespaceUrl, "urn:uuid:" + exportRowParams.ID.ToString()); // the ID is not required by digital editions. Hence, the _id from the Sony reader is used (although it has a different format).
+            _writer.WriteElementString(_prefix, "date", _namespaceUrl, exportRowParams.AddedDate.ToString("s") + "-00:00");
             _writer.WriteElementString(_prefix, "creator", _namespaceUrl, "creator id");
-            if (markupType == 1)
+            if (exportRowParams.MarkupType == 1)
             {
-                _writer.WriteElementString(_prefix, "title", _namespaceUrl, strName);
+                _writer.WriteElementString(_prefix, "title", _namespaceUrl, exportRowParams.StrName);
             }
             else
             {
-                _writer.WriteElementString(_prefix, "title", _namespaceUrl, "Seite " + page + ", " + addedDate.ToString("U") + " UTC");
+                _writer.WriteElementString(_prefix, "title", _namespaceUrl, "Seite " + exportRowParams.Page + ", " + exportRowParams.AddedDate.ToString("U") + " UTC");
             }
             _writer.WriteStartElement("target");
             _writer.WriteStartElement("fragment");
 
             // remove illegal \0 at the end of the string (would cause XML error)
-            strMark = strMark.Substring(0, strMark.Length - 1);
-            strMarkEnd = strMarkEnd.Substring(0, strMarkEnd.Length - 1);
+            exportRowParams.StrMark = exportRowParams.StrMark.Substring(0, exportRowParams.StrMark.Length - 1);
+            exportRowParams.StrMarkEnd = exportRowParams.StrMarkEnd.Substring(0, exportRowParams.StrMarkEnd.Length - 1);
 
-            _writer.WriteAttributeString("start", strMark);
-            if (markupType < 2)
+            _writer.WriteAttributeString("start", exportRowParams.StrMark);
+            if (exportRowParams.MarkupType < 2)
             {
-                _writer.WriteAttributeString("end", strMark);
+                _writer.WriteAttributeString("end", exportRowParams.StrMark);
             }
             else
             {
-                _writer.WriteAttributeString("end", strMarkEnd);
+                _writer.WriteAttributeString("end", exportRowParams.StrMarkEnd);
             }
             //writer.WriteAttributeString("end", strMarkEnd);
-            if (markupType < 2)
+            if (exportRowParams.MarkupType < 2)
             {
                 _writer.WriteElementString("text", "");
             }
             else
             {
-                _writer.WriteElementString("text", strMarkedText);
+                _writer.WriteElementString("text", exportRowParams.StrMarkedText);
             }
             _writer.WriteEndElement();
             _writer.WriteEndElement();
             _writer.WriteStartElement("content");
-            if (markupType > 10)
+            if (exportRowParams.MarkupType > 10)
             {
-                _writer.WriteElementString(_prefix, "date", _namespaceUrl, addedDate.ToString("s") + "-00:00");
-                _writer.WriteElementString("text", strName);
+                _writer.WriteElementString(_prefix, "date", _namespaceUrl, exportRowParams.AddedDate.ToString("s") + "-00:00");
+                _writer.WriteElementString("text", exportRowParams.StrName);
             }
             else
             {
@@ -101,7 +106,7 @@ namespace AnnotationConverter
             _writer.WriteEndElement();
         }
 
-        internal override void CloseDocument()
+        internal override void CloseTarget()
         {
             _writer.WriteStartElement("publication");
             _writer.WriteElementString(_prefix, "identifier", _namespaceUrl, null);

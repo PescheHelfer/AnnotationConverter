@@ -10,18 +10,21 @@ namespace AnnotationConverter
         internal string DataSource { get; set; }
         internal long ContentID { get; set; }
         internal string FileName { get; set; }
+        internal int Color { get; set; }
+        internal int HighlightStyle { get; set; }
         internal int CountAnnotations { get; set; }
         internal int CountBookmarks { get; set; }
         internal int TotalCount { get; set; } // Annotations + Bookmarks
 
-        protected DateTime _addedDate;
-        protected long _iD;
-        protected int _markupType;
-        protected int _page;
-        protected string _strMarkStart;
-        protected string _strMarkedText;
-        protected string _strMarkEnd;
-        protected string _strName;
+        //protected DateTime _addedDate;
+        //protected DateTime _modifiedDate;
+        //protected long _iD;
+        //protected int _markupType;
+        //protected int _page;
+        //protected string _strMarkStart;
+        //protected string _strMarkedText;
+        //protected string _strMarkEnd;
+        //protected string _strName;
         protected AbsExport _absExport;
 
         internal AbsImport(AbsExport absExport) // constructor
@@ -43,7 +46,7 @@ namespace AnnotationConverter
 
         abstract protected object ProvideConnection();
 
-        abstract internal void BuildBookList(List<Tuple<long, string, string>> liBooksContent);
+        abstract internal void BuildBookList(List<Tuple<long, string, string, string>> liBooksContent); // id, title+author, title only, filename
 
         abstract internal void GetTotalCountOfAnnotations();
 
@@ -51,7 +54,7 @@ namespace AnnotationConverter
 
         abstract internal void ReadBookmarks();
 
-        abstract protected void ConsumeAnnotationRow(SQLiteDataReader row);
+        abstract protected void ConsumeAnnotationRow(SQLiteDataReader row, bool isBookmark);
         //ToDo: make the row generic, so tha t not only SQLite is supported!
     }
 }

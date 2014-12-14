@@ -14,8 +14,7 @@ namespace AnnotationConverter
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConverterGUI());
-
+            Application.Run(new FrmChooseReaders());
         }
     }
 }

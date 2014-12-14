@@ -56,23 +56,45 @@
   <ItemGroup>
     <Compile Include="AbsExport.cs" />
     <Compile Include="AbsImport.cs" />
-    <Compile Include="ConverterGUI.cs">
+    <Compile Include="ChooseReaders.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConverterGUI.Designer.cs">
-      <DependentUpon>ConverterGUI.cs</DependentUpon>
+    <Compile Include="ChooseReaders.Designer.cs">
+      <DependentUpon>ChooseReaders.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConverterGuiADE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConverterGuiADE.Designer.cs">
+      <DependentUpon>ConverterGuiADE.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConverterGuiMantano.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConverterGuiMantano.Designer.cs">
+      <DependentUpon>ConverterGuiMantano.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExportRowParams.cs" />
     <Compile Include="ExportToADE.cs" />
+    <Compile Include="ExportToMantano.cs" />
     <Compile Include="ImportFromSonyPRST.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="x64\SQLite.Interop.dll">
@@ -83,8 +105,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ConverterGUI.resx">
-      <DependentUpon>ConverterGUI.cs</DependentUpon>
+    <EmbeddedResource Include="ChooseReaders.resx">
+      <DependentUpon>ChooseReaders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConverterGuiADE.resx">
+      <DependentUpon>ConverterGuiADE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConverterGuiMantano.resx">
+      <DependentUpon>ConverterGuiMantano.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

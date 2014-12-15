@@ -1,6 +1,6 @@
 AnnotationConverter
 ===================
-Version 1.0.0 Beta
+Version 1.0.0
 S*bit*Fire Software, 2014-12-14
 
 
@@ -12,11 +12,11 @@ from one E-reader and converts them to the format used by another.
 
 Restrictions, Requirements
 --------------------------
-• Requires .Net 4 (if absolutely necessary, I could try to create a .Net 3.5 version)
-• Has only be tested on Windows 7 (but should work on other versions of Windows, too)
-• Currently, annotations can only be converted from Sony PRS-T1-3 to Adobe Digital Editions 2-3
-• Only epub is supported
-• Drawings (notes done by handwriting.  will not be converted
+â€¢ Requires .Net 4 (if absolutely necessary, I could try to create a .Net 3.5 version)
+â€¢ Has only be tested on Windows 7 (but should work on other versions of Windows, too)
+â€¢ Currently, annotations can only be converted from Sony PRS-T1-3 to Adobe Digital Editions 2-3
+â€¢ Only epub is supported
+â€¢ Drawings (notes done by handwriting.  will not be converted
 
 
 Installation instructions

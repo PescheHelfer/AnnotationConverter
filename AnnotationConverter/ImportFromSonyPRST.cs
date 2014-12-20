@@ -170,6 +170,7 @@ namespace AnnotationConverter
                 // why does it have to be string?
             expParams.AddedDate = Helpers.Utils.ConvertUnixToDateTime((long) row[2]);
             expParams.ModifiedDate = Helpers.Utils.ConvertUnixToDateTime((long) (row[3] == DBNull.Value ? row[2] : row[3]));
+            expParams.IsBookmark = isBookmark;
 
             _absExport.ExportRow(expParams);
         }

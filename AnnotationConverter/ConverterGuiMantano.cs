@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using AnnotationConverter.Properties;
@@ -277,8 +278,7 @@ namespace AnnotationConverter
             }
             _export.RecordsSkipped = _export.RecordsInserted = _export.RecordsUpdated = 0;
             Cursor.Current = Cursors.WaitCursor;
-            btnConvert.Visible = false;
-            btnHelp.Visible = btnCancel.Visible = progressBar.Visible = false;
+            btnConvert.Visible = btnHelp.Visible = btnClose.Visible = false;
             // this.Enabled = false;
             _import.GetTotalCountOfAnnotations();
 
@@ -286,8 +286,7 @@ namespace AnnotationConverter
             bgWorker.RunWorkerAsync();
             pnlFinalSteps.Enabled = true;
             pnlFinalSteps.BackColor = System.Drawing.SystemColors.ControlLight;
-            btnHelp.Visible = false;
-            btnCancel.Visible = progressBar.Visible = true;
+            progressBar.Visible = true;
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -311,7 +310,7 @@ namespace AnnotationConverter
                 MessageBoxButtons.OK);
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
@@ -348,25 +347,30 @@ namespace AnnotationConverter
         private void bgWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             progressBar.Visible = false;
-            btnConvert.Visible = true;
+            btnConvert.Visible = btnHelp.Visible = btnClose.Visible = true;
             this.Enabled = true;
             ckbOutsourcedAnnot.Checked = false;
             Cursor.Current = Cursors.Default;
-            MessageBox.Show(String.Format("{0} bookmarks and {1} annotations have been converted:"
-                                          + "\r\n{2} records have been skipped (already existing),"
-                                          + "\r\n{3} records have been inserted"
-                                          + "\r\nand {4} records have been updated."
-                                          + "\r\n{5} errors have occured."
+            MessageBox.Show(String.Format("{0} bookmark{1} and {2} annotation{3} have been converted:"
+                                          + "\r\n{4} record{5} been skipped (already existing),"
+                                          + "\r\n{6} record{7} been inserted"
+                                          + "\r\nand {8} record{9} been updated."
+                                          + "\r\n{10} error{11} occured."
                 , _import.CountBookmarks.ToString()
+                , _import.CountBookmarks != 1 ? "s" : ""
                 , _import.CountAnnotations.ToString()
+                , _import.CountAnnotations != 1 ? "s" : ""
                 , _export.RecordsSkipped.ToString()
+                , _export.RecordsSkipped != 1 ? "s have" : " has"
                 , _export.RecordsInserted.ToString()
+                , _export.RecordsInserted != 1 ? "s have" : " has"
                 , _export.RecordsUpdated.ToString()
-                , _export.RecordErrors.ToString())
+                , _export.RecordsUpdated != 1 ? "s have" : " has"
+                , _export.RecordErrors.ToString()
+                , _export.RecordErrors != 1 ? "s have" : " has")
                 , "Conversion completed");
             btnConvert.Enabled = false;
             pnlFormat.Enabled = false;
-            btnHelp.Visible = true;
             cbBooks.SelectedIndex = 0;
             cbTargetBooks.SelectedIndex = 0;
             _import.CountAnnotations = _import.CountBookmarks = _import.TotalCount = 0;

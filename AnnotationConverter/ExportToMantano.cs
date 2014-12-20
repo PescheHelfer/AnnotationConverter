@@ -86,10 +86,10 @@ namespace AnnotationConverter
             cmd.Parameters.AddWithValue("@last_access", Helpers.Utils.ConvertDateTimeToUnix(exportRowParams.AddedDate)); // last_access
             cmd.Parameters.AddWithValue("@last_edit", Helpers.Utils.ConvertDateTimeToUnix(exportRowParams.ModifiedDate)); // last_edit
             cmd.Parameters.AddWithValue("@kind", exportRowParams.IsBookmark ? 0 : 1); // kind 1: highlight, 0: bookmark
-            switch (exportRowParams.MarkupType) // content_type, 0: w/o comment,  1: w/ comment, 2: drawing
+            switch (exportRowParams.MarkupType) // content_type, 0: w/o comment or bookmark,  1: w/ comment, 2: drawing
             {
                 case 1: // bookmark with comment
-                    cmd.Parameters.AddWithValue("@content_type", 1);
+                    cmd.Parameters.AddWithValue("@content_type", 0);
                     break;
                 case 11: // annotation with comment
                     cmd.Parameters.AddWithValue("@content_type", 1);
@@ -102,11 +102,14 @@ namespace AnnotationConverter
             cmd.Parameters.AddWithValue("@start_pos", exportRowParams.StrMark); // start_pos
             cmd.Parameters.AddWithValue("@end_pos", exportRowParams.StrMarkEnd); // end_pos
             cmd.Parameters.AddWithValue("@text_snippet", exportRowParams.StrMarkedText); // text_snippet
-            cmd.Parameters.AddWithValue("@color", exportRowParams.Color); // color, -131216 = yellow
-            cmd.Parameters.AddWithValue("@highlight_style", exportRowParams.HighlightStyle); // highlight_style, 0=highlight, 1=underline, 2=strikethrough, 3=vertical bar in margin
+            cmd.Parameters.AddWithValue("@color", exportRowParams.IsBookmark ? (object)DBNull.Value : exportRowParams.Color); // color, -131216 = yellow
+            cmd.Parameters.AddWithValue("@highlight_style", exportRowParams.HighlightStyle);
+                // highlight_style, 0=highlight, 1=underline, 2=strikethrough, 3=vertical bar in margin
             cmd.Parameters.AddWithValue("@page_num", exportRowParams.Page); // page_num
             cmd.Parameters.AddWithValue("@content",
-                exportRowParams.StrName != exportRowParams.StrMarkedText ? exportRowParams.StrName : (object) DBNull.Value); // content
+                exportRowParams.StrName != exportRowParams.StrMarkedText && !exportRowParams.IsBookmark
+                    ? exportRowParams.StrName
+                    : (object) DBNull.Value); // content
             cmd.Parameters.AddWithValue("@fk_document_id", _documentId); // fk_document_id 
 
             var outcome = CompareRow(cmd);
@@ -143,11 +146,11 @@ namespace AnnotationConverter
                               + "\r\n    WHEN NOT EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos OR end_pos = @end_pos )"
                               + "\r\n     THEN 1  -- no match -> INSERT (taken first because it is the most likely case)"
                               +
-                              "\r\n    WHEN EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos AND end_pos = @end_pos AND IFNULL(content,'') = IFNULL(@content,'') )"
+                              "\r\n    WHEN EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos AND end_pos = @end_pos AND IFNULL(content,'') = IFNULL(@content,'') AND @kind = kind AND @content_type = content_type )"
                               + "\r\n     THEN 0 -- identical -> SKIP"
                               +
-                              "\r\n    WHEN EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos AND end_pos = @end_pos AND IFNULL(content,'') <> IFNULL(@content,'') AND last_edit < @last_edit)"
-                              + "\r\n     THEN 2 -- match, content not empty and newer -> UPDATE, both pos identical"
+                              "\r\n    WHEN EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos AND end_pos = @end_pos AND (IFNULL(content,'') <> IFNULL(@content,'') OR @kind <> kind OR @content_type <> content_type ) AND last_edit <= @last_edit)"
+                              + "\r\n     THEN 2 -- match, content not empty and not older -> UPDATE, both pos identical"
                               +
                               "\r\n    WHEN EXISTS ( SELECT 1 FROM notes WHERE start_pos = @start_pos AND end_pos = @end_pos)"
                               + "\r\n     THEN 0 -- match, content empty or older -> SKIP"
@@ -169,7 +172,7 @@ namespace AnnotationConverter
                               + "\r\n    ELSE 9  -- unexpected case -> ERROR"
                               + "\r\n  END"
                 ;
-            return (Utils.CompareOutcomes)(int)(long)cmd.ExecuteScalar();
+            return (Utils.CompareOutcomes) (int) (long) cmd.ExecuteScalar();
         }
 
         private void InsertRow(SQLiteCommand cmd, string record)
@@ -238,7 +241,7 @@ namespace AnnotationConverter
                                + "\r\n,    page_num = @page_num"
                                + "\r\n,    content = @content"
                                +
-                               "\r\nWHERE fk_document_id = @fk_document_id AND start_pos = @start_pos AND end_pos = @end_pos AND IFNULL(content,'') <> IFNULL(@content,'') AND last_edit < @last_edit");
+                               "\r\nWHERE fk_document_id = @fk_document_id AND start_pos = @start_pos AND end_pos = @end_pos AND (IFNULL(content,'') <> IFNULL(@content,'') OR @kind <> kind OR @content_type <> content_type ) AND last_edit <= @last_edit");
 
             try
             {
